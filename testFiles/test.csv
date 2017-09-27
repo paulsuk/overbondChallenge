@@ -1,0 +1,12 @@
+bond,type,term,yield
+C1,corporate,3 years,5%
+C2,corporate,4 years,7%
+C3,corporate,7 years,12%
+G1,government,1 year,1%
+G2,government,4 years,4%
+G3,government,5 years,5%
+G4,government,10 years,10%
+Ginvalid,govment,1 year,5%
+Cinvalid,corp,1 year,5%
+Gwrongterm,government,1year,5%
+CwrongYield,corporate,1 year,invalid

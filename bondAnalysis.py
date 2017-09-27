@@ -1,6 +1,7 @@
 from enum import Enum
 import sys
-import pdb
+import tests
+import unittest
 
 class BondType(Enum):
 	'''
@@ -29,10 +30,29 @@ class Bond(object):
 		param - term: double that indicates the length of the term
 		param - yld: double that indicates the percent yield of the bond
 		'''
+		assert isinstance(name, str)
+		assert isinstance(bondType, BondType)
+		assert isinstance(term, float)
+		assert isinstance(yld, float)
+
 		self.name = name
 		self.type = bondType
 		self.term = term
 		self.yld = yld
+
+	def __eq__(self, other):
+		'''
+		Custom equality fucntion for Bond class
+		'''
+		if self.name != other.name:
+			return False
+		if self.type != other.type:
+			return False
+		if self.term != other.term:
+			return False
+		if self.yld != other.yld:
+			return False
+		return True
 
 	def compareToBenchmark(self, bonds):
 		'''
@@ -174,22 +194,27 @@ def processInput(filename):
 			raise Exception("Unexpected Input Format")
 
 		for line in file:
-			#Parse the line of the input file
-			line = line.strip().split(',')
-			name = line[0]
-			bondType = BondType[line[1]]
-			#term is in format of 'x years'
-			term = float(line[2].split()[0])
-			#yield is in format of 'x%'
-			yld = float(line[3].strip('%'))
+			try:
+				#Parse the line of the input file
+				line = line.strip().split(',')
+				name = line[0]
+				bondType = BondType[line[1]]
+				#term is in format of 'x years'
+				term = float(line[2].split()[0])
+				#yield is in format of 'x%'
+				yld = float(line[3].strip('%'))
 
-			#instantiate Bond object
-			bond = Bond(name, bondType, term, yld)
+				#instantiate Bond object
+				bond = Bond(name, bondType, term, yld)
 
-			if(bond.type == BondType.government):
-				gov.append(bond)
-			else:
-				corp.append(bond)
+				if(bond.type == BondType.government):
+					gov.append(bond)
+				else:
+					corp.append(bond)
+
+			#ignore any invalid rows
+			except Exception as e:
+				continue
 
 	return gov, corp
 
@@ -225,32 +250,31 @@ def challenge2(inputFile):
 		spread = bond.spreadToCurve(gov)
 		print("{},{:.2f}%".format(bond.name, spread))
 
-if __name__ == "__main__":
+def main():
 	assert sys.version_info >= (3,4), "Please run this program with a Python version of 3.4 or more recent. You are using {}".format(sys.version)
-	try: 
-		if len(sys.argv) < 3:
-			raise InputError("Please indicate an input file name, and challenge number (1 or 2)\n" + 
-				"e.g python3 inputfilename.csv 2")
-		elif len(sys.argv) >3:
-			raise InputError("too many arguments\n" + 
-				"e.g python3 inputfilename.csv 2")
+	if len(sys.argv) < 3:
+		raise InputError("Please indicate an input file name, and challenge number (1 or 2).\n" + 
+			"e.g python3 inputfilename.csv 2")
+	elif len(sys.argv) > 4:
+		raise InputError("too many arguments\n" + 
+			"e.g python3 inputfilename.csv 2")
+	else:
+		filename = sys.argv[1]
+		challengeNum = int(sys.argv[2])
+		if challengeNum == 1:
+			print("Solving challenge 1: spread to benchmark")
+			challenge1(filename)
+		elif challengeNum == 2:
+			print("Solving challenge 2: spread to curve")
+			challenge2(filename)
 		else:
-			filename = sys.argv[1]
-			try:
-				challengeNum = int(sys.argv[2])
-				if challengeNum == 1:
-					print("Solving challenge 1: spread to benchmark")
-					challenge1(filename)
-				elif challengeNum == 2:
-					print("Solving challenge 2: spread to curve")
-					challenge2(filename)
-				else:
-					raise ValueError("Challenge number should be 1 or 2")
+			raise ValueError("Challenge number should be 1 or 2\n" + 
+				"Please enter a valid number for the challenge number")
 
-			except ValueError as e:
-				print(e)
-				print("Please enter a valid number for the challenge number")
-			except Exception as e:
-				print(e)
-	except Exception as e:
-		print(e)
+def runTests():
+	testSuite = unittest.TestLoader().loadTestsFromModule(tests)
+	unittest.TextTestRunner(verbosity=2).run(testSuite)
+
+if __name__ == "__main__":
+	runTests()
+	main()
