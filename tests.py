@@ -64,7 +64,7 @@ class TestBondClass(unittest.TestCase):
 	def testCompareToBenchmark(self):
 		'''
 		Uses the example given in:
-		https://gist.github.com/kseyon/fdb3ede4fadc2559c74fcdbe32ccf613#file-sample_input-csv
+		https://gist.github.com/kseyon/fdb3ede4fadc2559c74fcdbe32ccf613
 		'''
 		gov, corp = bondAnalysis.processInput('testFiles/example1.csv')
 		name, spread = corp[0].compareToBenchmark(gov)
@@ -75,7 +75,7 @@ class TestBondClass(unittest.TestCase):
 	def testSpreadToCurve(self):
 		'''
 		Uses the example given in:
-		https://gist.github.com/kseyon/fdb3ede4fadc2559c74fcdbe32ccf613#file-sample_input-csv
+		https://gist.github.com/kseyon/fdb3ede4fadc2559c74fcdbe32ccf613
 		'''
 		gov, corp = bondAnalysis.processInput('testFiles/example2.csv')
 
